@@ -1,23 +1,24 @@
-package FFF.imbaya.protect;
+package FFF.ya;
 
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
-import android.content.pm.ProviderInfo;
-import android.util.ArrayMap;
-import android.util.Log;
+import android.content.res.AssetManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import dalvik.system.DexClassLoader;
 
 
-public class MainApplication extends Application {
+public class Artifical extends Application {
 
     private static String ApplicationName="com.example.imbaya.protectapk2.MyApplication";
-    private static String path="/sdcard/ls/classes.dex";
+    private static String path;
 
 
 
@@ -28,7 +29,14 @@ public class MainApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
-            super.attachBaseContext(base);
+            super.attachBaseContext(base);//先注册了可以使用
+
+
+        //从assets中读取dex放于path
+        path=getdexpath(base);
+
+
+
 
         //获取ActivityThread对象
         currentActivityThread = RefInvoke.invokeStaticMethod(
@@ -104,6 +112,7 @@ public class MainApplication extends Application {
         RefInvoke.setFieldOjbect("android.app.ActivityThread",
                 "mInitialApplication", currentActivityThread, app);
 
+        //泛型的概念是在编译时替换内部，因此其class对象为不加泛型的本类
         RefInvoke.invokeMethod(
                 "android.app.ActivityThread", "installContentProviders", currentActivityThread,
                 new Class[] { Context.class, List.class},
@@ -113,17 +122,47 @@ public class MainApplication extends Application {
 
 
 
-
-
-
-
-
-
         app.onCreate();
     }
 
 
 
+    String getdexpath(Context base)
+    {
+        String dexpath=base.getFilesDir().getParentFile().getAbsolutePath()+"/ls/target_classes.dex";
+        File dexfile=new File(dexpath);
+        if(dexfile.exists())
+        {
+            return  dexpath;
+        }
 
+        AssetManager am=base.getAssets();
+        try {
+
+            //创建文件
+            if(!dexfile.getParentFile().exists())
+            {
+                dexfile.getParentFile().mkdir();
+            }
+            dexfile.createNewFile();
+
+
+            InputStream is=am.open("classes.dex");
+            FileOutputStream fos = new FileOutputStream(dexfile);
+
+            byte[] buffer = new byte[1024];
+            int byteCount=0;
+            while((byteCount=is.read(buffer))!=-1) {//循环从输入流读取 buffer字节
+                fos.write(buffer, 0, byteCount);//将读取的输入流写入到输出流
+            }
+            fos.flush();//刷新缓冲区
+            is.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return dexpath;
+
+    }
 
 }
