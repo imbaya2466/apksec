@@ -21,13 +21,18 @@ public class ZipHelp {
 		} 
 	}
 
-	//提取zip中的文件，该处假设目标文件不存在
+	//提取zip中的文件，若文件存在则直接返回
 	public void extractFileformZip(String nameInzip,String target)
 	{
-	     log(nameInzip+" in "+ zf.getName() +" to "+target  );
-		ZipEntry ls= zf.getEntry(nameInzip);
-		File ou=new File(target);
+	        log(nameInzip+" in "+ zf.getName() +" to "+target  );
+	    	ZipEntry ls= zf.getEntry(nameInzip);
+	     	File ou=new File(target);
 
+			if(ou.exists())
+			{
+				return;
+			}
+		
 			if(!ou.getParentFile().exists())
 			{
 				ou.getParentFile().mkdirs();

@@ -3,9 +3,15 @@ package fff.ya;
 import util.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /*
@@ -21,7 +27,7 @@ work/
 	work/
 		out/
 	mubiao.apk
-	sign.apk
+	unsign.apk
  * 
  */
 
@@ -65,6 +71,7 @@ public class Main {
 		
 		sourceApk=directorypath+File.separator+args;
 		apkout=workpath+File.separator+"out";
+		targetApk=directorypath+File.separator+"unsign.apk";
 		
 		String command=toolpath+File.separator+"apktool"+File.separator+"apktool.bat d -o " + apkout  +" "+sourceApk;
 		log(command);
@@ -86,8 +93,8 @@ public class Main {
 		ZipHelp apk=new ZipHelp(sourceApk);
 		apk.extractFileformZip("classes.dex",apkout+File.separator+"assets"+File.separator+"classes.dex");
 		
-		//smali替换
-		log("植入壳");
+		//smali替换，可以用linux脚本实现
+		log("替换smali");
 		FileTool.delAllInPath(apkout+File.separator+"smali");
 		try {
 			FileTool.copyDir(housingpath+File.separator+"smali", apkout+File.separator+"smali");
@@ -96,12 +103,32 @@ public class Main {
 		}
 		
 		
-		//更改AndroidManifest暂时不改壳smali中的目标application名，先固定下来
+		//更改AndroidManifest，暂时不改壳smali中的目标application名，先固定下来
 		ChangeAM(apkout+File.separator+"AndroidManifest.xml");
+		log("AndroidManifest修改完成");
+		
+		
 		
 		//打包
+		command=toolpath+File.separator+"apktool"+File.separator+"apktool.bat b "+apkout+" -o"+targetApk;
+		try {
+			Process p = Runtime.getRuntime().exec(command);
+			int exit=p.waitFor();
+			if(exit!=0)
+			{
+				log("执行apktool失败"+exit);
+			}
+		} catch (IOException | InterruptedException e) {
+			
+			e.printStackTrace();
+		}
+		log("打包完成");
 		
-		//签名
+		//不签名
+		
+		//清理
+		clearWork();
+		log("清理完成");
 		
 		log("SuccessAll");
 		
@@ -109,11 +136,31 @@ public class Main {
 	}
 	
 	
+	void clearWork() 
+	{
+		FileTool.delAllInPath(workpath);
+	}
+	
 	//改变AndroidManifest
 	void ChangeAM(String AM)
 	{
-		
-		
+		DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
+        dbf.setIgnoringElementContentWhitespace(true);
+        DocumentBuilder db;
+		try {
+			db = dbf.newDocumentBuilder();
+			Document xmldoc=db.parse(AM);       
+		    Element root = xmldoc.getDocumentElement();
+		    Element per =(Element) XmlTool.selectSingleNode("/manifest/application", root);
+		    per.setAttribute("android:name", "FFF.ya.Artifical");
+		    
+		    XmlTool.saveXml(xmldoc, AM);
+
+		} catch (Exception  e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+      
 		
 	}
 	
