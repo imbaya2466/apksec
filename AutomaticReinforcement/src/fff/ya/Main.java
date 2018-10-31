@@ -15,8 +15,8 @@ import org.w3c.dom.Element;
 
 
 /*
- * 
-  Ê¹ÓÃÄ¿Â¼½á¹¹£º
+ *
+  ä½¿ç”¨ç›®å½•ç»“æ„ï¼š
 work/
 	main.jar
 	tool/
@@ -28,7 +28,7 @@ work/
 		out/
 	mubiao.apk
 	unsign.apk
- * 
+ *
  */
 
 
@@ -39,132 +39,132 @@ public class Main {
 	File housing=new File(directory, "housing");
 	File work=new File(directory,"work");
 	File tool=new File(directory, "tool");
-	
+
 	String directorypath=directory.getAbsolutePath();
 	String housingpath=housing.getAbsolutePath();
 	String workpath=work.getAbsolutePath();
 	String toolpath=tool.getAbsolutePath();
-	
+
 	String sourceApk;
 	String targetApk;
 	String apkout;
-	
-	
+
+
 	public static void main(String[] args) {
-		
+
 		if(args.length==0)
 		{
-			log("ÊäÈëĞèÒª´¦ÀíµÄapkÃû");
+			log("è¾“å…¥éœ€è¦å¤„ç†çš„apkå");
 			return;
-			
+
 		}
 		Main mian=new Main();
 		mian.run(args[0]);
-		
+
 
 
 	}
-	
+
 	void run(String args)
 	{
-		//Ö´ĞĞapktool
-		
+		//æ‰§è¡Œapktool
+
 		sourceApk=directorypath+File.separator+args;
 		apkout=workpath+File.separator+"out";
 		targetApk=directorypath+File.separator+"unsign.apk";
-		
+
 		String command=toolpath+File.separator+"apktool"+File.separator+"apktool.bat d -o " + apkout  +" "+sourceApk;
 		log(command);
-		
+
 		try {
 			Process p = Runtime.getRuntime().exec(command);
 			int exit=p.waitFor();
 			if(exit!=0)
 			{
-				log("Ö´ĞĞapktoolÊ§°Ü"+exit+"¿ÉÄÜÒÑ´æÔÚout");
+				log("æ‰§è¡Œapktoolå¤±è´¥"+exit+"å¯èƒ½å·²å­˜åœ¨out");
 			}
 		} catch (IOException | InterruptedException e) {
-			
+
 			e.printStackTrace();
 		}
-		
-		
-		//ÌáÈ¡dexµ½assets
+
+
+		//æå–dexåˆ°assets
 		ZipHelp apk=new ZipHelp(sourceApk);
 		apk.extractFileformZip("classes.dex",apkout+File.separator+"assets"+File.separator+"classes.dex");
-		
-		//smaliÌæ»»£¬¿ÉÒÔÓÃlinux½Å±¾ÊµÏÖ
-		log("Ìæ»»smali");
+
+		//smaliæ›¿æ¢ï¼Œå¯ä»¥ç”¨linuxè„šæœ¬å®ç°
+		log("æ›¿æ¢smali");
 		FileTool.delAllInPath(apkout+File.separator+"smali");
 		try {
 			FileTool.copyDir(housingpath+File.separator+"smali", apkout+File.separator+"smali");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		//¸ü¸ÄAndroidManifest£¬ÔİÊ±²»¸Ä¿ÇsmaliÖĞµÄÄ¿±êapplicationÃû£¬ÏÈ¹Ì¶¨ÏÂÀ´
+
+
+		//æ›´æ”¹AndroidManifestï¼Œæš‚æ—¶ä¸æ”¹å£³smaliä¸­çš„ç›®æ ‡applicationåï¼Œå…ˆå›ºå®šä¸‹æ¥
 		ChangeAM(apkout+File.separator+"AndroidManifest.xml");
-		log("AndroidManifestĞŞ¸ÄÍê³É");
-		
-		
-		
-		//´ò°ü
+		log("AndroidManifestä¿®æ”¹å®Œæˆ");
+
+
+
+		//æ‰“åŒ…
 		command=toolpath+File.separator+"apktool"+File.separator+"apktool.bat b "+apkout+" -o"+targetApk;
 		try {
 			Process p = Runtime.getRuntime().exec(command);
 			int exit=p.waitFor();
 			if(exit!=0)
 			{
-				log("Ö´ĞĞapktoolÊ§°Ü"+exit);
+				log("æ‰§è¡Œapktoolå¤±è´¥"+exit);
 			}
 		} catch (IOException | InterruptedException e) {
-			
+
 			e.printStackTrace();
 		}
-		log("´ò°üÍê³É");
-		
-		//²»Ç©Ãû
-		
-		//ÇåÀí
+		log("æ‰“åŒ…å®Œæˆ");
+
+		//ä¸ç­¾å
+
+		//æ¸…ç†
 		clearWork();
-		log("ÇåÀíÍê³É");
-		
+		log("æ¸…ç†å®Œæˆ");
+
 		log("SuccessAll");
-		
-		
+
+
 	}
-	
-	
-	void clearWork() 
+
+
+	void clearWork()
 	{
 		FileTool.delAllInPath(workpath);
 	}
-	
-	//¸Ä±äAndroidManifest
+
+	//æ”¹å˜AndroidManifest
 	void ChangeAM(String AM)
 	{
 		DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
-        dbf.setIgnoringElementContentWhitespace(true);
-        DocumentBuilder db;
+		dbf.setIgnoringElementContentWhitespace(true);
+		DocumentBuilder db;
 		try {
 			db = dbf.newDocumentBuilder();
-			Document xmldoc=db.parse(AM);       
-		    Element root = xmldoc.getDocumentElement();
-		    Element per =(Element) XmlTool.selectSingleNode("/manifest/application", root);
-		    per.setAttribute("android:name", "FFF.ya.Artifical");
-		    
-		    XmlTool.saveXml(xmldoc, AM);
+			Document xmldoc=db.parse(AM);
+			Element root = xmldoc.getDocumentElement();
+			Element per =(Element) XmlTool.selectSingleNode("/manifest/application", root);
+			per.setAttribute("android:name", "FFF.ya.Artifical");
+
+			XmlTool.saveXml(xmldoc, AM);
 
 		} catch (Exception  e) {
-			// TODO ×Ô¶¯Éú³ÉµÄ catch ¿é
+			// TODO è‡ªåŠ¨ç”Ÿæˆçš„ catch å—
 			e.printStackTrace();
 		}
-      
-		
+
+
 	}
-	
-	
+
+
 	static void log(String a)
 	{
 		System.out.println(a);

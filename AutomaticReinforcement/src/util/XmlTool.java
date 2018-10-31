@@ -20,7 +20,7 @@ import org.w3c.dom.NodeList;
 
 
 public class XmlTool {
-	public static Node selectSingleNode(String express, Element source) {
+    public static Node selectSingleNode(String express, Element source) {
         Node result=null;
         XPathFactory xpathFactory=XPathFactory.newInstance();
         XPath xpath=xpathFactory.newXPath();
@@ -29,15 +29,15 @@ public class XmlTool {
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        
+
         return result;
     }
-	
-	public static void saveXml(Document from,String to) throws Exception
-	{
+
+    public static void saveXml(Document from,String to) throws Exception
+    {
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer former = factory.newTransformer();
         former.transform(new DOMSource(from), new StreamResult(new File(to)));
-	}
-	
+    }
+
 }

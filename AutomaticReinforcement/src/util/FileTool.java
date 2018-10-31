@@ -6,99 +6,99 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileTool {
-	
-	//É¾³ýÎÄ¼þ¼ÐÏÂËùÓÐ
-	   public static boolean delAllInPath(String path) {
-	       boolean flag = false;
-	       File file = new File(path);
-	       if (!file.exists()) {
-	         return flag;
-	       }
-	       if (!file.isDirectory()) {
-	         return flag;
-	       }
-	       String[] tempList = file.list();
-	       File temp = null;
-	       for (int i = 0; i < tempList.length; i++) {
-	          if (path.endsWith(File.separator)) {
-	             temp = new File(path + tempList[i]);
-	          } else {
-	              temp = new File(path + File.separator + tempList[i]);
-	          }
-	          if (temp.isFile()) {
-	             temp.delete();
-	          }
-	          if (temp.isDirectory()) {
-	        	  delAllInPath(path + "/" + tempList[i]);//ÏÈÉ¾³ýÎÄ¼þ¼ÐÀïÃæµÄÎÄ¼þ
-	             delFolder(path + "/" + tempList[i]);//ÔÙÉ¾³ý¿ÕÎÄ¼þ¼Ð
-	             flag = true;
-	          }
-	       }
-	       return flag;
-	     }
-	   
-	   
-	   //É¾³ýÎÄ¼þ¼Ð
-	     public static void delFolder(String folderPath) {
-	         try {
-	        	 delAllInPath(folderPath); //É¾³ýÍêÀïÃæËùÓÐÄÚÈÝ
-	            String filePath = folderPath;
-	            filePath = filePath.toString();
-	            java.io.File myFilePath = new java.io.File(filePath);
-	            myFilePath.delete(); //É¾³ý¿ÕÎÄ¼þ¼Ð
-	         } catch (Exception e) {
-	           e.printStackTrace(); 
-	         }
-	    }
-	     
-	     
-	     //¸´ÖÆÒ»¸öÎÄ¼þ¼ÐÏÂµÄÄÚÈÝµ½ÁíÒ»¸öÎÄ¼þ¼ÐÏÂ
-	     public static void copyDir(String sourcePath, String newPath) throws IOException {
-	         File file = new File(sourcePath);
-	         String[] filePath = file.list();
-	         
-	         if (!(new File(newPath)).exists()) {
-	             (new File(newPath)).mkdir();
-	         }
-	         
-	         for (int i = 0; i < filePath.length; i++) {
-	             if ((new File(sourcePath +File.separator + filePath[i])).isDirectory()) {
-	                 copyDir(sourcePath  + File.separator  + filePath[i], newPath  + File.separator + filePath[i]);
-	             }
-	             
-	             if (new File(sourcePath  + File.separator + filePath[i]).isFile()) {
-	                 copyFile(sourcePath + File.separator + filePath[i], newPath + File.separator + filePath[i]);
-	             }
-	             
-	         }
-	     }
-	     
-	     public static void copyFile(String oldPath, String newPath) throws IOException {
-	         File oldFile = new File(oldPath);
-	         File file = new File(newPath);
-	         FileInputStream in = new FileInputStream(oldFile);
-	         FileOutputStream out = new FileOutputStream(file);;
 
-	         byte[] buffer=new byte[2048];
-	         int readByte = 0;
-	         while((readByte = in.read(buffer)) != -1){
-	             out.write(buffer, 0, readByte);
-	         }
-	         out.flush();
-	         in.close();
-	         out.close();
-	     }
-	     
-	     
-	     
-	     
-	     
-	     
-	     
-	     
-	     
-	     
-	     
-	     
-	     
+	//åˆ é™¤æ–‡ä»¶å¤¹ä¸‹æ‰€æœ‰
+	public static boolean delAllInPath(String path) {
+		boolean flag = false;
+		File file = new File(path);
+		if (!file.exists()) {
+			return flag;
+		}
+		if (!file.isDirectory()) {
+			return flag;
+		}
+		String[] tempList = file.list();
+		File temp = null;
+		for (int i = 0; i < tempList.length; i++) {
+			if (path.endsWith(File.separator)) {
+				temp = new File(path + tempList[i]);
+			} else {
+				temp = new File(path + File.separator + tempList[i]);
+			}
+			if (temp.isFile()) {
+				temp.delete();
+			}
+			if (temp.isDirectory()) {
+				delAllInPath(path + "/" + tempList[i]);//å…ˆåˆ é™¤æ–‡ä»¶å¤¹é‡Œé¢çš„æ–‡ä»¶
+				delFolder(path + "/" + tempList[i]);//å†åˆ é™¤ç©ºæ–‡ä»¶å¤¹
+				flag = true;
+			}
+		}
+		return flag;
+	}
+
+
+	//åˆ é™¤æ–‡ä»¶å¤¹
+	public static void delFolder(String folderPath) {
+		try {
+			delAllInPath(folderPath); //åˆ é™¤å®Œé‡Œé¢æ‰€æœ‰å†…å®¹
+			String filePath = folderPath;
+			filePath = filePath.toString();
+			java.io.File myFilePath = new java.io.File(filePath);
+			myFilePath.delete(); //åˆ é™¤ç©ºæ–‡ä»¶å¤¹
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	//å¤åˆ¶ä¸€ä¸ªæ–‡ä»¶å¤¹ä¸‹çš„å†…å®¹åˆ°å¦ä¸€ä¸ªæ–‡ä»¶å¤¹ä¸‹
+	public static void copyDir(String sourcePath, String newPath) throws IOException {
+		File file = new File(sourcePath);
+		String[] filePath = file.list();
+
+		if (!(new File(newPath)).exists()) {
+			(new File(newPath)).mkdir();
+		}
+
+		for (int i = 0; i < filePath.length; i++) {
+			if ((new File(sourcePath +File.separator + filePath[i])).isDirectory()) {
+				copyDir(sourcePath  + File.separator  + filePath[i], newPath  + File.separator + filePath[i]);
+			}
+
+			if (new File(sourcePath  + File.separator + filePath[i]).isFile()) {
+				copyFile(sourcePath + File.separator + filePath[i], newPath + File.separator + filePath[i]);
+			}
+
+		}
+	}
+
+	public static void copyFile(String oldPath, String newPath) throws IOException {
+		File oldFile = new File(oldPath);
+		File file = new File(newPath);
+		FileInputStream in = new FileInputStream(oldFile);
+		FileOutputStream out = new FileOutputStream(file);;
+
+		byte[] buffer=new byte[2048];
+		int readByte = 0;
+		while((readByte = in.read(buffer)) != -1){
+			out.write(buffer, 0, readByte);
+		}
+		out.flush();
+		in.close();
+		out.close();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

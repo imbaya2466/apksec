@@ -10,64 +10,64 @@ import java.util.zip.ZipFile;
 
 
 public class ZipHelp {
-	
+
 	ZipFile zf;
 	public ZipHelp(String name) {
-		
+
 		try {
 			zf = new ZipFile(name);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 
-	//ÌáÈ¡zipÖĞµÄÎÄ¼ş£¬ÈôÎÄ¼ş´æÔÚÔòÖ±½Ó·µ»Ø
+	//æå–zipä¸­çš„æ–‡ä»¶ï¼Œè‹¥æ–‡ä»¶å­˜åœ¨åˆ™ç›´æ¥è¿”å›
 	public void extractFileformZip(String nameInzip,String target)
 	{
-	        log(nameInzip+" in "+ zf.getName() +" to "+target  );
-	    	ZipEntry ls= zf.getEntry(nameInzip);
-	     	File ou=new File(target);
+		log(nameInzip+" in "+ zf.getName() +" to "+target  );
+		ZipEntry ls= zf.getEntry(nameInzip);
+		File ou=new File(target);
 
-			if(ou.exists())
-			{
-				return;
-			}
-		
-			if(!ou.getParentFile().exists())
-			{
-				ou.getParentFile().mkdirs();
-			}
-			
-		
+		if(ou.exists())
+		{
+			return;
+		}
+
+		if(!ou.getParentFile().exists())
+		{
+			ou.getParentFile().mkdirs();
+		}
+
+
 		try {
 			ou.createNewFile();
 			InputStream is =zf.getInputStream(ls);
 			FileOutputStream fos=new FileOutputStream(ou);
-			
-			
-            byte[] buffer = new byte[1024];
-            int byteCount=0;
-            while((byteCount=is.read(buffer))!=-1) {//Ñ­»·´ÓÊäÈëÁ÷¶ÁÈ¡ buffer×Ö½Ú
-                fos.write(buffer, 0, byteCount);//½«¶ÁÈ¡µÄÊäÈëÁ÷Ğ´Èëµ½Êä³öÁ÷
-            }
-            fos.flush();//Ë¢ĞÂ»º³åÇø
-            is.close();
-            fos.close();
-			
+
+
+			byte[] buffer = new byte[1024];
+			int byteCount=0;
+			while((byteCount=is.read(buffer))!=-1) {//å¾ªç¯ä»è¾“å…¥æµè¯»å– bufferå­—èŠ‚
+				fos.write(buffer, 0, byteCount);//å°†è¯»å–çš„è¾“å…¥æµå†™å…¥åˆ°è¾“å‡ºæµ
+			}
+			fos.flush();//åˆ·æ–°ç¼“å†²åŒº
+			is.close();
+			fos.close();
+
 		} catch (IOException e) {
-			// TODO ×Ô¶¯Éú³ÉµÄ catch ¿é
+			// TODO è‡ªåŠ¨ç”Ÿæˆçš„ catch å—
 			e.printStackTrace();
 		}
-		
-		
-		
-		
+
+
+
+
 	}
-	
+
 	void log(String a)
 	{
 		System.out.println(a);
 	}
-	
-	
+
+
 }
