@@ -144,23 +144,7 @@ public class Main {
 	//改变AndroidManifest
 	void ChangeAM(String AM)
 	{
-		DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
-		dbf.setIgnoringElementContentWhitespace(true);
-		DocumentBuilder db;
-		try {
-			db = dbf.newDocumentBuilder();
-			Document xmldoc=db.parse(AM);
-			Element root = xmldoc.getDocumentElement();
-			Element per =(Element) XmlTool.selectSingleNode("/manifest/application", root);
-			per.setAttribute("android:name", "FFF.ya.Artifical");
-
-			XmlTool.saveXml(xmldoc, AM);
-
-		} catch (Exception  e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-
+		XmlTool.changeAttribute(AM,"/manifest/application","name","FFF.ya.Artifical");
 
 	}
 
