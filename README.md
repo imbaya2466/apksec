@@ -15,11 +15,11 @@ work_产品目录:可以直接使用的产品
 1. java壳，解密加载dex
 2. 自动化加固
 3. native化
+4. 加密加载、不落地加载dex
 
 TODO:
-1. 不落地加载dex
-2. native保护，反调试。
-3. so不落地加载
-4. dex-vmp
+1. native保护，反调试。
+2. so不落地加载
+3. dex-vmp
 
 
