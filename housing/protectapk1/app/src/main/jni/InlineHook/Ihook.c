@@ -29,7 +29,7 @@ bool ChangePageProperty(void *pAddress, size_t size)
     while(l < lPageCount)
     {
         //利用mprotect改页属性
-        int iRet = mprotect((const void *)(ulNewPageStartAddress), ulPageSize, iProtect);
+        int iRet = mprotect((const void *)(ulNewPageStartAddress+l*ulPageSize), ulPageSize, iProtect);
         if(-1 == iRet)
         {
             LOGI("mprotect error:%s", strerror(errno));

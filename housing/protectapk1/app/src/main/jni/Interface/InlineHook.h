@@ -12,7 +12,8 @@
 //hook模块名、VA偏移、回调函数
 //返回hook的VA地址
 void* DoInLineHook(std::string module, unsigned long off,void (*onCallBack)(struct user_pt_regs *));
-
+//直接使用VAhook
+void* DoInLineHook(unsigned long off,void (*onCallBack)(struct user_pt_regs *));
 //传入hook的VA地址，将其hook删除
 void DeleteInLineHook(void *pHookAddr);
 

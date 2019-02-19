@@ -26,6 +26,8 @@ public class Artifical extends Application {
     private  Object boundApplication;//是AMS传入的AppBindData
     private  Object loadedapk;
 */
+    //资源文件名
+    private static String assetsName="b";
     @Override
     protected void attachBaseContext(Context base) {
             super.attachBaseContext(base);//先注册了可以使用
@@ -151,7 +153,7 @@ public class Artifical extends Application {
             dexfile.createNewFile();
 
 
-            InputStream is=am.open("classes.dex");
+            InputStream is=am.open(assetsName);
             FileOutputStream fos = new FileOutputStream(dexfile);
 
             byte[] buffer = new byte[1024];

@@ -6,7 +6,7 @@ include $(CLEAR_VARS)
 LOCAL_CXXFLAGS +=  -g -O0
 LOCAL_ARM_MODE := arm
 LOCAL_MODULE    := IHook
-LOCAL_SRC_FILES := IHook.c ihookstub.s fixPCOpcode.c  ihookstubonce.s
+LOCAL_SRC_FILES := IHook.c ihookstub.s fixPCOpcode.c  ihookstubonce.s util.c
 LOCAL_LDLIBS += -L$(SYSROOT)/usr/lib -llog
 
 include $(BUILD_STATIC_LIBRARY)
